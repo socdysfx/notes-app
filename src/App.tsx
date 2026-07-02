@@ -17,7 +17,8 @@ interface RecentItem {
 interface TrashItem {
   id: string
   title: string
-  deletedAt: string
+  type: 'note' | 'folder'
+  children?: TrashItem[]
 }
 
 const recentItems: RecentItem[] = [
@@ -56,7 +57,23 @@ const notesTree: NoteItem[] = [
 ]
 
 const trashItems: TrashItem[] = [
-  { id: 'trash-1', title: 'Old Draft', deletedAt: '5 days ago' },
+  {
+    id: 'trash-folder-1',
+    title: 'Old Projects',
+    type: 'folder',
+    children: [
+      {
+        id: 'trash-folder-1-1',
+        title: 'Archived',
+        type: 'folder',
+        children: [
+          { id: 'trash-3', title: '2024 Review', type: 'note' },
+        ],
+      },
+      { id: 'trash-2', title: 'Old Draft', type: 'note' },
+    ],
+  },
+  { id: 'trash-1', title: 'Temp Files', type: 'note' },
 ]
 
 function sortTree(items: NoteItem[]): NoteItem[] {
@@ -68,6 +85,55 @@ function sortTree(items: NoteItem[]): NoteItem[] {
     ...item,
     children: item.children ? sortTree(item.children) : undefined
   }))
+}
+
+function sortTrashTree(items: TrashItem[]): TrashItem[] {
+  return [...items].sort((a, b) => {
+    if (a.type === 'folder' && b.type === 'note') return -1
+    if (a.type === 'note' && b.type === 'folder') return 1
+    return a.title.localeCompare(b.title)
+  }).map(item => ({
+    ...item,
+    children: item.children ? sortTrashTree(item.children) : undefined
+  }))
+}
+
+function TrashFolderItem({ item }: { item: TrashItem }) {
+  const [collapsed, setCollapsed] = React.useState(true)
+  const sortedChildren = item.children ? sortTrashTree(item.children) : []
+
+  return (
+    <div className="folder-item">
+      <div
+        className="folder-header"
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        <svg className="folder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <polyline points={collapsed ? '9 18 15 12 9 6' : '6 9 12 15 18 9'} />
+        </svg>
+        <span className="folder-name">{item.title}</span>
+      </div>
+      {!collapsed && sortedChildren.length > 0 && (
+        <div className="folder-children">
+          {sortedChildren.map(child =>
+            child.type === 'folder' ? (
+              <TrashFolderItem key={child.id} item={child} />
+            ) : (
+              <div key={child.id} className="trash-item">
+                <svg className="trash-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+                <div className="item-info">
+                  <span className="item-title">{child.title}</span>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      )}
+    </div>
+  )
 }
 
 function FolderItem({ item }: { item: NoteItem }) {
@@ -108,6 +174,7 @@ function FolderItem({ item }: { item: NoteItem }) {
 
 function TrashSection() {
   const [collapsed, setCollapsed] = React.useState(true)
+  const sortedTrash = sortTrashTree(trashItems)
 
   return (
     <div className="section">
@@ -119,17 +186,21 @@ function TrashSection() {
       </div>
       {!collapsed && (
         <div className="section-content">
-          {trashItems.map(item => (
-            <div key={item.id} className="trash-item">
-              <svg className="trash-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-              </svg>
-              <div className="item-info">
-                <span className="item-title">{item.title}</span>
+          {sortedTrash.map(item =>
+            item.type === 'folder' ? (
+              <TrashFolderItem key={item.id} item={item} />
+            ) : (
+              <div key={item.id} className="trash-item">
+                <svg className="trash-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+                <div className="item-info">
+                  <span className="item-title">{item.title}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
       )}
     </div>

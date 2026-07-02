@@ -84,9 +84,9 @@ Sidebar memiliki 3 sections:
 **Section 3 - Trash**:
 - **Title**: Trash [TBD]
 - **Style**:
-  - Nested tree structure (folder + document items) [UPDATE]
-  - Contains: Folders and documents [NEW]
-  - Folder behavior: Expandable/collapsible, default collapsed [NEW]
+  - Nested tree structure (folder + document items)
+  - Contains: Folders and documents
+  - Folder behavior: Expandable/collapsible, default collapsed
   - Font family: system-ui [TBD]
   - Font size: 13px [TBD]
   - Item height: 28px [TBD]
