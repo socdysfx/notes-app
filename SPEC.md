@@ -37,6 +37,7 @@ Sidebar memiliki 3 sections:
   - Item background: transparent [TBD]
   - Item text color: #ccc [TBD]
   - Item timestamp color: #666 [TBD]
+  - Timestamp position: right-aligned (di ujung kanan item)
   - Border radius: 3px [TBD]
   - Display: flex [TBD]
   - Gap: 8px [TBD]
