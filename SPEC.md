@@ -89,7 +89,7 @@ Sidebar memiliki 3 sections:
   - Item height: 28px [TBD]
   - Item padding: 4px 8px [TBD]
   - Item text color: #666 [TBD]
-  - Item timestamp color: #888 [TBD]
+  - Item timestamp: Tidak ditampilkan [NEW]
   - Item border radius: 3px [TBD]
   - Item display: flex [TBD]
   - Item gap: 8px [TBD]
