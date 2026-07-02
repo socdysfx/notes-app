@@ -28,6 +28,15 @@ const recentItems: RecentItem[] = [
 
 const notesTree: NoteItem[] = [
   {
+    id: 'folder-2',
+    title: 'Personal',
+    type: 'folder',
+    children: [
+      { id: 'note-4', title: 'Shopping List', timestamp: 'Jun 29, 2026', type: 'note' },
+    ],
+  },
+  { id: 'note-5', title: 'Uncategorized Note', timestamp: 'Jun 28, 2026', type: 'note' },
+  {
     id: 'folder-1',
     title: 'Work',
     type: 'folder',
@@ -44,23 +53,26 @@ const notesTree: NoteItem[] = [
       },
     ],
   },
-  {
-    id: 'folder-2',
-    title: 'Personal',
-    type: 'folder',
-    children: [
-      { id: 'note-4', title: 'Shopping List', timestamp: 'Jun 29, 2026', type: 'note' },
-    ],
-  },
-  { id: 'note-5', title: 'Uncategorized Note', timestamp: 'Jun 28, 2026', type: 'note' },
 ]
 
 const trashItems: TrashItem[] = [
   { id: 'trash-1', title: 'Old Draft', deletedAt: '5 days ago' },
 ]
 
+function sortTree(items: NoteItem[]): NoteItem[] {
+  return [...items].sort((a, b) => {
+    if (a.type === 'folder' && b.type === 'note') return -1
+    if (a.type === 'note' && b.type === 'folder') return 1
+    return a.title.localeCompare(b.title)
+  }).map(item => ({
+    ...item,
+    children: item.children ? sortTree(item.children) : undefined
+  }))
+}
+
 function FolderItem({ item }: { item: NoteItem }) {
   const [collapsed, setCollapsed] = React.useState(true)
+  const sortedChildren = item.children ? sortTree(item.children) : []
 
   return (
     <div className="folder-item">
@@ -73,9 +85,9 @@ function FolderItem({ item }: { item: NoteItem }) {
         </svg>
         <span className="folder-name">{item.title}</span>
       </div>
-      {!collapsed && item.children && (
+      {!collapsed && sortedChildren.length > 0 && (
         <div className="folder-children">
-          {item.children.map(child =>
+          {sortedChildren.map(child =>
             child.type === 'folder' ? (
               <FolderItem key={child.id} item={child} />
             ) : (
@@ -126,6 +138,8 @@ function TrashSection() {
 }
 
 function App() {
+  const sortedNotes = sortTree(notesTree)
+
   return (
     <>
       <aside className="sidebar">
@@ -155,7 +169,7 @@ function App() {
               <span className="section-title">Notes</span>
             </div>
             <div className="section-content">
-              {notesTree.map(item =>
+              {sortedNotes.map(item =>
                 item.type === 'folder' ? (
                   <FolderItem key={item.id} item={item} />
                 ) : (
