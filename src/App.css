@@ -156,7 +156,8 @@
   color: #cc0000;
 }
 
-.trash-icon {
+.trash-icon,
+.document-icon {
   width: 16px;
   height: 16px;
   color: #888;
