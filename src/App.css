@@ -91,6 +91,12 @@
   overflow: hidden;
 }
 
+.recent-item .item-info {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .item-title {
   font-size: 13px;
   color: #ccc;
