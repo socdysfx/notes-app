@@ -160,6 +160,13 @@ Sidebar memiliki 3 sections.
 - Min height: 100vh [TBD]
 - Background: #ffffff [TBD]
 
+## Item Icon Style
+
+- Folder dan dokumen masing-masing menggunakan icon yang berbeda [NEW]
+- Folder icon: folder deh [TBD] [NEW]
+- Document icon: document deh [TBD] [NEW]
+- Icon berlaku untuk Recent, Notes, dan Trash section [NEW]
+
 ## Tech Stack
 
 - Block Editor: BlockSuite [TBD]
