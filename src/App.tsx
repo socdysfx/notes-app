@@ -127,7 +127,6 @@ function TrashSection() {
               </svg>
               <div className="item-info">
                 <span className="item-title">{item.title}</span>
-                <span className="item-timestamp">{item.deletedAt}</span>
               </div>
             </div>
           ))}
